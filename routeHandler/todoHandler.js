@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
       }
     });
   } catch (err) {
-    console.log("object", err);
+    console.log("There were a mongoose error");
   }
 });
 //-------------------------------------------------------GET ALL THE TODOS
