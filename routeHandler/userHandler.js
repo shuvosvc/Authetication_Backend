@@ -27,24 +27,38 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const tem_user = await User.find({ username: req.body.username });
-  if (tem_user && tem_user.length > 0) {
-    const isValidPassword = await bcrypt.compare(
-      req.body.password,
-      tem_user[0].password
-    );
-    if (isValidPassword) {
-      //..................generate token
-      const token = jwt.sign({
-        username: tem_user[0].username,
-        userId: tem_user[0]._id,
-      });
+  try {
+    const tem_user = await User.find({ username: req.body.username });
+    if (tem_user && tem_user.length > 0) {
+      const isValidPassword = await bcrypt.compare(
+        req.body.password,
+        tem_user[0].password
+      );
+      if (isValidPassword) {
+        //..................generate token
+        const token = jwt.sign(
+          {
+            username: tem_user[0].username,
+            userId: tem_user[0]._id,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: "1h" }
+        );
+        res.status(200).json({
+          access_token: token,
+          message: "Login successful!",
+        });
+      } else {
+        res.status(401).json({
+          error: "Authentication failed1",
+        });
+      }
     } else {
       res.status(401).json({
-        error: "Authentication failed1",
+        error: "Authentication failed2",
       });
     }
-  } else {
+  } catch {
     res.status(401).json({
       error: "Authentication failed2",
     });
