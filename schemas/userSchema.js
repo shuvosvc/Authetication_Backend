@@ -9,4 +9,4 @@ const userSchema = mongoose.Schema({
     enum: ["active", "inactive"],
   },
 });
-module.exports = todoSchema;
+module.exports = userSchema;

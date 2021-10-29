@@ -1,10 +1,12 @@
 const express = require("express");
-const router = express.Router();
 const mongoose = require("mongoose");
-const userSchema = require("../schemas/todoSchema");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const router = express.Router();
+const userSchema = require("../schemas/userSchema");
 const User = new mongoose.model("User", userSchema);
 //-------------------------------------------------------GET ALL THE TODOS
-router.post("/", async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = new User({
@@ -24,4 +26,24 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  const tem_user = await User.find({ username: req.body.username });
+  if (tem_user && tem_user.length > 0) {
+    const isValidPassword = await bcrypt.compare(
+      req.body.password,
+      tem_user[0].password
+    );
+    if (isValidPassword) {
+      //..................generate token
+    } else {
+      res.status(401).json({
+        error: "Authentication failed1",
+      });
+    }
+  } else {
+    res.status(401).json({
+      error: "Authentication failed2",
+    });
+  }
+});
 module.exports = router;
