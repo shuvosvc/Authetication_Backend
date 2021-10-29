@@ -35,6 +35,13 @@ router.post("/login", async (req, res) => {
     );
     if (isValidPassword) {
       //..................generate token
+      const token = jwt.sign(
+        {
+          username: tem_user[0].username,
+          userId: tem_user[0]._id,
+        },
+        "hfjfjfhhfh"
+      );
     } else {
       res.status(401).json({
         error: "Authentication failed1",
