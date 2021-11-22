@@ -4,9 +4,10 @@ const checkLogin = (req, res, next) => {
   try {
     const token = authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { username, userID } = decoded;
+    const { username, userId } = decoded;
     req.username = username;
-    req.userID = userID;
+    req.userId = userId;
+    console.log(req.userId);
     next();
   } catch {
     next("Authentication failed!m");

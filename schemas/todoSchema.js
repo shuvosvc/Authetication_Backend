@@ -7,5 +7,6 @@ const todoSchema = mongoose.Schema({
     enum: ["active", "inactive"],
   },
   date: { type: Date, default: Date.now },
+  user: { type: mongoose.Types.ObjectId, ref: "User" },
 });
 module.exports = todoSchema;

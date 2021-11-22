@@ -6,34 +6,31 @@ const Todo = new mongoose.model("Todo", todoSchema);
 
 const checkLogin = require("../middleware/checkLogin");
 //-------------------------------------------------------GET ALL THE TODOS
-router.get("/", checkLogin, async (req, res) => {
-  try {
-    console.log(req.username);
-    console.log(req.userId);
-    await Todo.find({ status: "inactive" }, (err, data) => {
+router.get("/", checkLogin, (req, res) => {
+  console.log(req.username);
+  console.log(req.userId);
+  Todo.find({})
+    .populate("user")
+    .exec((err, data) => {
       if (err) {
         res.status(500).json({
-          error: "There was a server side error",
+          error: "There was a server side error!",
         });
       } else {
-        // res.status(200).json({
-        //   result:data,
-        //   message: "Todo was inserted successfully",
-        // });
-
-        res.json(data);
+        res.status(200).json({
+          result: data,
+          message: "Success",
+        });
       }
     });
-  } catch (err) {
-    console.log("There were a mongoose error");
-  }
 });
 //-------------------------------------------------------GET ALL THE TODOS
 
 //----------------------------------------------------POST TODO
-router.post("/", async (req, res) => {
+router.post("/", checkLogin, async (req, res) => {
+  const newTodo = new Todo({ ...req.body, user: req.userId });
+
   try {
-    const newTodo = new Todo(req.body);
     await newTodo.save((err) => {
       if (err) {
         res.status(500).json({
@@ -49,6 +46,25 @@ router.post("/", async (req, res) => {
     console.log("There were a mongoose error");
   }
 });
+
+// router.post("/", async (req, res) => {
+//   try {
+//     const newTodo = new Todo(req.body);
+//     await newTodo.save((err) => {
+//       if (err) {
+//         res.status(500).json({
+//           error: "There was a server side error",
+//         });
+//       } else {
+//         res.status(200).json({
+//           message: "Todo was inserted successfully",
+//         });
+//       }
+//     });
+//   } catch (err) {
+//     console.log("There were a mongoose error");
+//   }
+// });
 
 //----------------------------------------------POST MULTIPLE TODO
 router.post("/ALL", async (req, res) => {

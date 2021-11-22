@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const userSchema = require("../schemas/userSchema");
 const User = new mongoose.model("User", userSchema);
-//-------------------------------------------------------GET ALL THE TODOS
+//-------------------------------------------------------signup
 router.post("/signup", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -25,7 +25,7 @@ router.post("/signup", async (req, res) => {
     });
   }
 });
-
+//-------------------------------------------------------login
 router.post("/login", async (req, res) => {
   try {
     const tem_user = await User.find({ username: req.body.username });
@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
             userId: tem_user[0]._id,
           },
           process.env.JWT_SECRET,
-          { expiresIn: "1h" }
+          { expiresIn: "24h" }
         );
         res.status(200).json({
           access_token: token,
