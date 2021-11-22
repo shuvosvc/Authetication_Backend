@@ -6,23 +6,27 @@ const Todo = new mongoose.model("Todo", todoSchema);
 
 const checkLogin = require("../middleware/checkLogin");
 //-------------------------------------------------------GET ALL THE TODOS
-router.get("/", checkLogin, (req, res) => {
+router.get("/", checkLogin, async (req, res) => {
   console.log(req.username);
   console.log(req.userId);
-  Todo.find({})
-    .populate("user")
-    .exec((err, data) => {
-      if (err) {
-        res.status(500).json({
-          error: "There was a server side error!",
-        });
-      } else {
-        res.status(200).json({
-          result: data,
-          message: "Success",
-        });
-      }
-    });
+  try {
+    await Todo.find({})
+      .populate("user")
+      .exec((err, data) => {
+        if (err) {
+          res.status(500).json({
+            error: "There was a server side error!",
+          });
+        } else {
+          res.status(200).json({
+            result: data,
+            message: "Success",
+          });
+        }
+      });
+  } catch (err) {
+    console.log("There were a mongoose error");
+  }
 });
 //-------------------------------------------------------GET ALL THE TODOS
 
